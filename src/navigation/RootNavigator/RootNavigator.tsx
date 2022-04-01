@@ -12,13 +12,8 @@ export const RootNavigator: React.FC<{}> = () => {
       <RootStack.Screen
         name="Search"
         component={SearchScreen}
-        // options={{ headerShown: false }}
+        options={{ headerShown: false }}
       />
-      {/* <RootStack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: 'Oops!' }}
-      /> */}
     </RootStack.Navigator>
   );
 };

@@ -1,24 +1,63 @@
-import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  Text,
+  SafeAreaView,
+  FlatList,
+  ActivityIndicator,
+  Pressable,
+  ListRenderItem,
+} from 'react-native';
+import { useSearch } from '../api/apollo/search/useSearch';
+import client from '../api/axios/client';
 import { blackColor, whiteColor } from '../utils/colors';
 
 export const SearchScreen: React.FC<{}> = () => {
-  const [queryString, setQueryString] = useState<string>();
+  const [queryString, setQueryString] = useState<string>('');
+  const [search, { data, loading, error }] = useSearch();
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    console.log({ data, error });
+  }, [data, error]);
+
+  const renderItem: ListRenderItem<any> = ({ item }) => (
+    <Pressable>
+      <Text>Movie</Text>
+    </Pressable>
+  );
+
+  const onSearch = () => {
+    client.auth();
+    // search({ variables: { term: queryString } });
+  };
   return (
-    <View style={styles.container}>
-      <View style={styles.searchBar}>
-        {/* <Icon name="search" color="rgba(0, 0, 0, 0.5)" size={24} /> */}
-        <TextInput
-          style={styles.input}
-          value={queryString}
-          onChangeText={setQueryString}
-          placeholder="Search"
-          placeholderTextColor="rgba(88, 87, 87, 0.75)"
-          //   onSubmitEditing={() => search && search(queryString)}
-          returnKeyType="search"
-        />
+    <SafeAreaView>
+      <View style={styles.container}>
+        <View style={styles.searchBar}>
+          <TextInput
+            style={styles.input}
+            value={queryString}
+            onChangeText={setQueryString}
+            placeholder="Search"
+            placeholderTextColor="rgba(88, 87, 87, 0.75)"
+            onSubmitEditing={onSearch}
+            returnKeyType="search"
+          />
+        </View>
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          <FlatList
+            data={movies}
+            renderItem={renderItem}
+            keyExtractor={(_, index) => index.toString()}
+          />
+        )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -32,8 +71,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     backgroundColor: whiteColor,
-    minHeight: 36,
+    minHeight: 40,
     borderRadius: 6,
+    margin: 10,
   },
   input: {
     flex: 1,

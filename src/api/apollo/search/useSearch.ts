@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql, useLazyQuery, useQuery } from '@apollo/client';
 
 export const SEARCH = gql`
   query Search($term: String!) {
@@ -16,4 +16,4 @@ export const SEARCH = gql`
     }
   }
 `;
-export const useSearch = () => useQuery(SEARCH);
+export const useSearch = () => useLazyQuery(SEARCH);
